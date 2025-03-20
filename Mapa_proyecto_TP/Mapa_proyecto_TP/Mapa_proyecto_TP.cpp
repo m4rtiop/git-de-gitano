@@ -181,27 +181,43 @@ bool existGem(int posPl[], PlayerMovement movPl)
 	switch (movPl)
 	{
 	case UP:
-		if (posPl[1] -= 1)
+		if (posPl[1] - 1 == GEMAS)
 		{
-
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 		break;
 	case DOWN:
-		if (posPl[1] += 1)
+		if (posPl[1] + 1 == GEMAS)
 		{
-
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 		break;
 	case LEFT:
-		if (posPl[0] -= 1)
+		if (posPl[0] - 1 == GEMAS)
 		{
-
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 		break;
 	case RIGHT:
-		if (posPl[0] += 1)
+		if (posPl[0] + 1 == GEMAS)
 		{
-
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 		break;
 	}
