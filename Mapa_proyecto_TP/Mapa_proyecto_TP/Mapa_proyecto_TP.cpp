@@ -62,29 +62,24 @@ void initializeBoard(Casillas** board, int X, int Y, int posPl[])
 
 	for (int i = 0; i < X && i < Y; i++)
 	{
-		for (int j = 0; j < Y; j++)
-		{
-			
-			if (board[i][j] == board[i][0] || board[i][j] == board[0][j] ) //|| board[i][j] == board[0][j] || board[i][j] == board[i][Y - 1] || board[i][j] == board[X - 1][j]
-			{
-				board[i][j] = PARED;
-			}
-			/*
-			if (board[i][j] == board[i][Y-1] || board[i][j] == board[X-1][j]) {
-				board[i][j] = PARED;
-			}
-			*/
-			
-			
-			
-		}
+		board[0][i] = PARED;
+		board[X-1][i] = PARED;
+
+
+		
 	}
-	for (int i = 0; i < X; i++)
+
+
+	for (int j = 0; j < Y; j++)
 	{
-		for (int j = 0; j < Y; j++)
-		{
-			cout << board[i][j];
-		}
+
+		board[j][0] = PARED;
+		board[j][Y - 1] = PARED;
+
+
+
+
+
 	}
 
 
