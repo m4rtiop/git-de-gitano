@@ -10,8 +10,18 @@ struct Player
 {
 	int score;
 	int posPl[2];
+	bool isPlaing;
 	PlayerMovement movPl;
+	Player();
 };
+
+Player::Player() {
+	score = 0;
+	posPl[0] = 1;
+	posPl[1] = 1;
+	isPlaing = true;
+	movPl = UP;
+}
 
 void readFile(int& x, int& y)
 {
@@ -54,12 +64,29 @@ void initializeBoard(Casillas** board, int X, int Y, int posPl[])
 	{
 		for (int j = 0; j < Y; j++)
 		{
-			if (board[i][j] == board[i][0] || board[i][j] == board[0][j] || board[i][j] == board[i][Y - 1] || board[i][j] == board[X - 1][j])
+			
+			if (board[i][j] == board[i][0] || board[i][j] == board[0][j] ) //|| board[i][j] == board[0][j] || board[i][j] == board[i][Y - 1] || board[i][j] == board[X - 1][j]
 			{
 				board[i][j] = PARED;
 			}
+			/*
+			if (board[i][j] == board[i][Y-1] || board[i][j] == board[X-1][j]) {
+				board[i][j] = PARED;
+			}
+			*/
+			
+			
+			
 		}
 	}
+	for (int i = 0; i < X; i++)
+	{
+		for (int j = 0; j < Y; j++)
+		{
+			cout << board[i][j];
+		}
+	}
+
 
 	int posibleCas = (X - 2) * (Y - 2);
 	int temp = (int)((posibleCas * 0.1)) + 1;
@@ -102,16 +129,17 @@ void initializeBoard(Casillas** board, int X, int Y, int posPl[])
 		posPl[0] = rand() % X;
 		posPl[1] = rand() % Y;
 	}
+	board[posPl[0]][posPl[1]] = PLAYER;
 
 }
 
-bool checkMovement(int coorPl[], PlayerMovement movPl)
+bool checkMovement(int posPl[], PlayerMovement movPl, Casillas** board)
 {
 	//Detect if movement is valid
 	switch (movPl)
 	{
 	case UP:
-		if (coorPl[1] == 0)
+		if (board[posPl[0]][posPl[1] - 1] == PARED)
 		{
 			return false;
 		}
@@ -121,7 +149,7 @@ bool checkMovement(int coorPl[], PlayerMovement movPl)
 		}
 		break;
 	case DOWN:
-		if (coorPl[1] == 0)
+		if (board[posPl[0]][posPl[1] + 1] == PARED)
 		{
 			return false;
 		}
@@ -131,7 +159,7 @@ bool checkMovement(int coorPl[], PlayerMovement movPl)
 		}
 		break;
 	case LEFT:
-		if (coorPl[0] == 0)
+		if (board[posPl[0] - 1][posPl[1]] == PARED)
 		{
 			return false;
 		}
@@ -141,7 +169,7 @@ bool checkMovement(int coorPl[], PlayerMovement movPl)
 		}
 		break;
 	case RIGHT:
-		if (coorPl[0] == 0)
+		if (board[posPl[0] + 1][posPl[1]] == PARED)
 		{
 			return false;
 		}
@@ -158,7 +186,7 @@ void addScore(int& score)
 	score++;
 }
 
-void setPosition(int posPl[], PlayerMovement movPl)
+void setPosition(int posPl[], PlayerMovement &movPl)
 {
 	char move;
 	bool okKey = false;
@@ -191,13 +219,14 @@ void setPosition(int posPl[], PlayerMovement movPl)
 	}
 }
 
-bool existGem(int posPl[], PlayerMovement movPl)
+bool existGem(int posPl[], PlayerMovement movPl, Casillas** board)
 {
 	switch (movPl)
 	{
 	case UP:
-		if (posPl[1] - 1 == GEMAS)
+		if (board[posPl[0]][posPl[1] - 1] == GEMAS)
 		{
+
 			return true;
 		}
 		else
@@ -206,7 +235,7 @@ bool existGem(int posPl[], PlayerMovement movPl)
 		}
 		break;
 	case DOWN:
-		if (posPl[1] + 1 == GEMAS)
+		if (board[posPl[0]][posPl[1] + 1] == GEMAS)
 		{
 			return true;
 		}
@@ -216,7 +245,7 @@ bool existGem(int posPl[], PlayerMovement movPl)
 		}
 		break;
 	case LEFT:
-		if (posPl[0] - 1 == GEMAS)
+		if (board[posPl[0] - 1][posPl[1]] == GEMAS)
 		{
 			return true;
 		}
@@ -226,7 +255,7 @@ bool existGem(int posPl[], PlayerMovement movPl)
 		}
 		break;
 	case RIGHT:
-		if (posPl[0] + 1 == GEMAS)
+		if (board[posPl[0] + 1][posPl[1]] == GEMAS)
 		{
 			return true;
 		}
@@ -238,12 +267,12 @@ bool existGem(int posPl[], PlayerMovement movPl)
 	}
 }
 
-bool existPincho(int posPl[], PlayerMovement movPl)
+bool existPincho(int posPl[], PlayerMovement movPl, Casillas** board)
 {
 	switch (movPl)
 	{
 	case UP:
-		if (posPl[1] - 1 == PINCHOS)
+		if (board[posPl[0]][posPl[1] - 1] == PINCHOS)
 		{
 			return true;
 		}
@@ -253,7 +282,7 @@ bool existPincho(int posPl[], PlayerMovement movPl)
 		}
 		break;
 	case DOWN:
-		if (posPl[1] + 1 == PINCHOS)
+		if (board[posPl[0]][posPl[1] + 1] == PINCHOS)
 		{
 			return true;
 		}
@@ -263,7 +292,7 @@ bool existPincho(int posPl[], PlayerMovement movPl)
 		}
 		break;
 	case LEFT:
-		if (posPl[0] - 1 == PINCHOS)
+		if (board[posPl[0] - 1][posPl[1]] == PINCHOS)
 		{
 			return true;
 		}
@@ -273,7 +302,7 @@ bool existPincho(int posPl[], PlayerMovement movPl)
 		}
 		break;
 	case RIGHT:
-		if (posPl[0] + 1 == PINCHOS)
+		if (board[posPl[0] + 1][posPl[1]] == PINCHOS)
 		{
 			return true;
 		}
@@ -322,27 +351,31 @@ void printBoard(int x, int y, Casillas** board)
 {
 	system("cls");
 
-	cout << "P->Pinchos		 X->Player		G->Gemas" << endl << endl;
-	
+	cout << "P->Pinchos		 X->Player		G->Gemas" << endl;
+
 	for (int i = 0; i < y; i++)
 	{
 		for (int j = 0; j < x; j++)
 		{
+			if (board[j][i] == PARED) {
+				cout << "#";
+
+			}
 			if (board[j][i] == NADA)
 			{
-				cout << "___" << endl << "|   |" << endl << "| " << ' ' << " |" << endl << "|___|";
+				cout << " ";
 			}
 			else if (board[j][i] == GEMAS)
 			{
-				cout << "___" << endl << "|   |" << endl << "| " << 'G' << " |" << endl << "|___|";
+				cout << "G";
 			}
 			else if (board[j][i] == PINCHOS)
 			{
-				cout << "___" << endl << "|   |" << endl << "| " << 'P' << " |" << endl << "|___|";
+				cout << "P";
 			}
 			else if (board[j][i] == PLAYER)
 			{
-				cout << "___" << endl << "|   |" << endl << "| " << 'X' << " |" << endl << "|___|";
+				cout << "X";
 			}
 		}
 		cout << endl;
@@ -360,12 +393,31 @@ void destroyBoard(Casillas** board, int x)
 	delete[] board;
 }
 
+bool ExistGemas(Casillas** board, int X, int Y) {
+	int count_gemas = 0;
+	for (int i = 0; i < X; i++) {
+
+		for (int j = 0; j < X; j++) {
+			if (board[i][j] == GEMAS)
+				count_gemas++;
+		}
+
+	}
+	if (count_gemas > 0) {
+		return true;
+	}
+	else
+		return false;
+
+}
+
 int main()
 {
 	srand(time(NULL));
 	bool lose = false;
 	int x, y;
 	Player player;
+
 	readFile(x, y);
 	Casillas** board = new Casillas * [x];
 	for (int i = 0; i < x; i++)
@@ -373,6 +425,31 @@ int main()
 		board[i] = new Casillas[y];
 	}
 	initializeBoard(board, x, y, player.posPl);
+	
+	
+	while (player.isPlaing)
+	{
+		printBoard(x, y, board);
+		setPosition(player.posPl, player.movPl);
+		if (existGem(player.posPl, player.movPl, board)) {
+			addScore(player.score);
+		}
+		if (existPincho(player.posPl, player.movPl, board)){
+			player.isPlaing = false;
+		}
+		if (!ExistGemas(board, x, y)) {
+			player.isPlaing = false;
+		}
+		// if hay pared no me muevo
+		if (checkMovement(player.posPl, player.movPl, board)) {
+			movePlayer(player.posPl, board, player.movPl);
+		}
+		
+	}
+
+	gameOver(player.score);
+
+	destroyBoard(board, x);
 	//checkMovement(player.posPl, player.movPl);
 }
 
