@@ -4,7 +4,7 @@ using namespace std;
 
 enum PlayerMovement { UP, DOWN, LEFT, RIGHT };
 
-enum Casillas { PARED, PINCHOS, GEMAS, NADA };
+enum Casillas { PARED, PINCHOS, GEMAS, NADA, PLAYER };
 
 struct Player
 {
@@ -40,36 +40,37 @@ void readFile(int& x, int& y)
 	file.close();
 }
 
-void initializeBoard(Casillas** board, int x, int y,int posPl[])
+void initializeBoard(Casillas** board, int X, int Y, int posPl[])
 {
-	for (int i = 0; i < x; i++)
+	for (int i = 0; i < X; i++)
 	{
-		for (int j = 0; j < y; j++)
+		for (int j = 0; j < Y; j++)
 		{
 			board[i][j] = NADA;
 		}
 	}
-	
-	for (int i = 0; i < x && i < y; i++)
+
+	for (int i = 0; i < X && i < Y; i++)
 	{
-		for (int j = 0; j < y; j++)
+		for (int j = 0; j < Y; j++)
 		{
-			if (board[i][j] == board[i][0] || board[i][j] == board[0][j] || board[i][j] == board[i][y] || board[i][j] == board[x][j])
+			if (board[i][j] == board[i][0] || board[i][j] == board[0][j] || board[i][j] == board[i][Y - 1] || board[i][j] == board[X - 1][j])
 			{
 				board[i][j] = PARED;
 			}
 		}
 	}
-	
-	int posibleCas = (x - 2) * (y - 2);
-	int n = rand() % (int)(posibleCas * 0.1) + 1;
+
+	int posibleCas = (X - 2) * (Y - 2);
+	int temp = (int)((posibleCas * 0.1)) + 1;
+	int n = rand() % temp;
 	for (int i = 0; i < n; i++)
 	{
 		bool ok = false;
 		while (!ok)
 		{
-			int b = rand() % x;
-			int m = rand() % y;
+			int b = rand() % X;
+			int m = rand() % Y;
 			if (board[b][m] == NADA)
 			{
 				board[b][m] = PINCHOS;
@@ -84,8 +85,8 @@ void initializeBoard(Casillas** board, int x, int y,int posPl[])
 		bool ok = false;
 		while (!ok)
 		{
-			int b = rand() % x;
-			int m = rand() % y;
+			int b = rand() % X;
+			int m = rand() % Y;
 			if (board[b][m] == NADA)
 			{
 				board[b][m] = GEMAS;
@@ -94,12 +95,12 @@ void initializeBoard(Casillas** board, int x, int y,int posPl[])
 		}
 	}
 
-	posPl[0] = rand() % x;
-	posPl[1] = rand() % y;
+	posPl[0] = rand() % X;
+	posPl[1] = rand() % Y;
 	while (board[posPl[0]][posPl[1]] == PARED)
 	{
-		posPl[0] = rand() % x;
-		posPl[1] = rand() % y;
+		posPl[0] = rand() % X;
+		posPl[1] = rand() % Y;
 	}
 
 }
@@ -159,20 +160,34 @@ void addScore(int& score)
 
 void setPosition(int posPl[], PlayerMovement movPl)
 {
-	switch (movPl)
+	char move;
+	bool okKey = false;
+	cin >> move;
+	while (!okKey)
 	{
-	case UP:
-		posPl[1] -= 1;
-		break;
-	case DOWN:
-		posPl[1] += 1;
-		break;
-	case LEFT:
-		posPl[0] -= 1;
-		break;
-	case RIGHT:
-		posPl[0] += 1;
-		break;
+		switch (move)
+		{
+		case 'w':
+		case 'W':
+			movPl = UP;
+			okKey = true;
+			break;
+		case 's':
+		case 'S':
+			movPl = DOWN;
+			okKey = true;
+			break;
+		case 'a':
+		case 'A':
+			movPl = LEFT;
+			okKey = true;
+			break;
+		case 'd':
+		case 'D':
+			movPl = RIGHT;
+			okKey = true;
+			break;
+		}
 	}
 }
 
@@ -223,9 +238,132 @@ bool existGem(int posPl[], PlayerMovement movPl)
 	}
 }
 
+bool existPincho(int posPl[], PlayerMovement movPl)
+{
+	switch (movPl)
+	{
+	case UP:
+		if (posPl[1] - 1 == PINCHOS)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		break;
+	case DOWN:
+		if (posPl[1] + 1 == PINCHOS)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		break;
+	case LEFT:
+		if (posPl[0] - 1 == PINCHOS)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		break;
+	case RIGHT:
+		if (posPl[0] + 1 == PINCHOS)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+		break;
+	}
+}
+
+void movePlayer(int posPl[], Casillas** board, PlayerMovement movPl)
+{
+	switch (movPl)
+	{
+	case UP:
+		board[posPl[0]][posPl[1]] = NADA;
+		posPl[1] -= 1;
+		board[posPl[0]][posPl[1]] = PLAYER;
+		break;
+	case DOWN:
+		board[posPl[0]][posPl[1]] = NADA;
+		posPl[1] += 1;
+		board[posPl[0]][posPl[1]] = PLAYER;
+		break;
+	case LEFT:
+		board[posPl[0]][posPl[1]] = NADA;
+		posPl[0] -= 1;
+		board[posPl[0]][posPl[1]] = PLAYER;
+		break;
+	case RIGHT:
+		board[posPl[0]][posPl[1]] = NADA;
+		posPl[0] += 1;
+		board[posPl[0]][posPl[1]] = PLAYER;
+		break;
+	}
+}
+
+void gameOver(int score)
+{
+	system("cls");
+	cout << endl << "----GAME OVER----" << endl << "TOTAL SCORE: " << score << endl;
+}
+
+void printBoard(int x, int y, Casillas** board)
+{
+	system("cls");
+
+	cout << "P->Pinchos		 X->Player		G->Gemas" << endl << endl;
+	
+	for (int i = 0; i < y; i++)
+	{
+		for (int j = 0; j < x; j++)
+		{
+			if (board[j][i] == NADA)
+			{
+				cout << "___" << endl << "|   |" << endl << "| " << ' ' << " |" << endl << "|___|";
+			}
+			else if (board[j][i] == GEMAS)
+			{
+				cout << "___" << endl << "|   |" << endl << "| " << 'G' << " |" << endl << "|___|";
+			}
+			else if (board[j][i] == PINCHOS)
+			{
+				cout << "___" << endl << "|   |" << endl << "| " << 'P' << " |" << endl << "|___|";
+			}
+			else if (board[j][i] == PLAYER)
+			{
+				cout << "___" << endl << "|   |" << endl << "| " << 'X' << " |" << endl << "|___|";
+			}
+		}
+		cout << endl;
+	}
+
+	cout << endl << "W A S D - > Move" << endl << endl << "Enter your action: ";
+}
+
+void destroyBoard(Casillas** board, int x)
+{
+	for (int i = 0; i < x; i++)
+	{
+		delete[] board[i];
+	}
+	delete[] board;
+}
+
 int main()
 {
 	srand(time(NULL));
+	bool lose = false;
 	int x, y;
 	Player player;
 	readFile(x, y);
