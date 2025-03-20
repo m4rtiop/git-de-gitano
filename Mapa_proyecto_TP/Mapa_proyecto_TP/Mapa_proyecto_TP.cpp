@@ -52,10 +52,13 @@ void initializeBoard(Casillas** board, int x, int y,int posPl[])
 	
 	for (int i = 0; i < x && i < y; i++)
 	{
-		board[i][0] = PARED;
-		board[0][i] = PARED;
-		board[i][y] = PARED;
-		board[x][i] = PARED;
+		for (int j = 0; j < y; j++)
+		{
+			if (board[i][j] == board[i][0] || board[i][j] == board[0][j] || board[i][j] == board[i][y] || board[i][j] == board[x][j])
+			{
+				board[i][j] = PARED;
+			}
+		}
 	}
 	
 	int posibleCas = (x - 2) * (y - 2);
@@ -75,7 +78,7 @@ void initializeBoard(Casillas** board, int x, int y,int posPl[])
 		}
 	}
 
-	int n = rand() % (int)(posibleCas * 0.25) + 1;
+	n = rand() % (int)(posibleCas * 0.25) + 1;
 	for (int i = 0; i < n; i++)
 	{
 		bool ok = false;
@@ -173,7 +176,36 @@ void setPosition(int posPl[], PlayerMovement movPl)
 	}
 }
 
+bool existGem(int posPl[], PlayerMovement movPl)
+{
+	switch (movPl)
+	{
+	case UP:
+		if (posPl[1] -= 1)
+		{
 
+		}
+		break;
+	case DOWN:
+		if (posPl[1] += 1)
+		{
+
+		}
+		break;
+	case LEFT:
+		if (posPl[0] -= 1)
+		{
+
+		}
+		break;
+	case RIGHT:
+		if (posPl[0] += 1)
+		{
+
+		}
+		break;
+	}
+}
 
 int main()
 {
