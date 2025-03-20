@@ -1,8 +1,5 @@
 #include <fstream>
 #include <iostream>
-#include <vector>
-//#include "PlayerMov.h"
-//#include ""
 using namespace std;
 
 enum PlayerMovement { UP, DOWN, LEFT, RIGHT };
@@ -12,7 +9,8 @@ enum Casillas { PARED, PINCHOS, GEMAS, NADA };
 struct Player
 {
 	int score;
-	vector<int> posPl{ 0,0 };
+	int posPl[2];
+	PlayerMovement movPl;
 };
 
 void readFile(int& x, int& y)
@@ -42,7 +40,7 @@ void readFile(int& x, int& y)
 	file.close();
 }
 
-void initializeBoard(Casillas** board, int x, int y,vector<int> posPl)
+void initializeBoard(Casillas** board, int x, int y,int posPl[])
 {
 	for (int i = 0; i < x; i++)
 	{
@@ -94,18 +92,88 @@ void initializeBoard(Casillas** board, int x, int y,vector<int> posPl)
 	}
 
 	posPl[0] = rand() % x;
-	posPl[1] = rand() % y;//segir
+	posPl[1] = rand() % y;
+	while (board[posPl[0]][posPl[1]] == PARED)
+	{
+		posPl[0] = rand() % x;
+		posPl[1] = rand() % y;
+	}
 
 }
 
-/*bool checkMovement(int coorPl[], PlayerMovement movPl)
+bool checkMovement(int coorPl[], PlayerMovement movPl)
 {
 	//Detect if movement is valid
-	if (coorPl[0] == 0 && movPl == LEFT || coorPl[1] == 0 && movPl == UP)
+	switch (movPl)
 	{
-		return false;
+	case UP:
+		if (coorPl[1] == 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+		break;
+	case DOWN:
+		if (coorPl[1] == 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+		break;
+	case LEFT:
+		if (coorPl[0] == 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+		break;
+	case RIGHT:
+		if (coorPl[0] == 0)
+		{
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+		break;
 	}
-}*/
+}
+
+void addScore(int& score)
+{
+	score++;
+}
+
+void setPosition(int posPl[], PlayerMovement movPl)
+{
+	switch (movPl)
+	{
+	case UP:
+		posPl[1] -= 1;
+		break;
+	case DOWN:
+		posPl[1] += 1;
+		break;
+	case LEFT:
+		posPl[0] -= 1;
+		break;
+	case RIGHT:
+		posPl[0] += 1;
+		break;
+	}
+}
+
+
 
 int main()
 {
@@ -118,7 +186,7 @@ int main()
 	{
 		board[i] = new Casillas[y];
 	}
-
 	initializeBoard(board, x, y, player.posPl);
+	//checkMovement(player.posPl, player.movPl);
 }
 
