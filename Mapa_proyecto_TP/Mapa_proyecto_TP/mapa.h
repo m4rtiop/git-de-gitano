@@ -1,7 +1,0 @@
-#pragma once
-
-
-struct mapa
-{
-
-};
