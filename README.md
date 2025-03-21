@@ -1,1 +1,4 @@
-# git-de-gitano
+# membres del grup:
+
+Marti olivera
+Jordi Gratacos
